@@ -1,0 +1,29 @@
+{
+  "name": "tweed",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-eslint": "^7.1.1",
+    "babel-jest": "^18.0.0",
+    "jest": "^18.1.0",
+    "standard": "^8.6.0",
+    "tweed-babel-config": "^0.0.2",
+    "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "snabbdom": "^0.5.4",
+    "snabbdom-jsx": "^0.3.1",
+    "snabbdom-to-html": "^3.0.1"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "globals": [
+      "describe",
+      "beforeEach",
+      "test",
+      "expect"
+    ]
+  }
+}
