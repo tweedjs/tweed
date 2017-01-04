@@ -1,7 +1,7 @@
 import { optimize } from 'webpack'
 
 export default {
-  entry: './dist/index',
+  entry: './dist/webpack',
   output: {
     path: __dirname,
     filename: 'tweed.min.js',

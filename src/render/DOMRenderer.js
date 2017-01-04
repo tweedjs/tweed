@@ -14,6 +14,10 @@ const patch = init([
 
 export default class DOMRenderer {
   constructor (element) {
+    if (element == null) {
+      throw new Error('Root element was null.')
+    }
+
     this._root = element
   }
 

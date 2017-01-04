@@ -46,3 +46,6 @@ export class Engine {
   constructor (renderer: Renderer)
   render (factory: NodeFactory): void
 }
+
+export type Mutating = PropertyDecorator
+export const mutating: Mutating
