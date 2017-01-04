@@ -1,6 +1,15 @@
 {
   "name": "tweed",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "An Object Oriented UI Library",
+  "homepage": "https://github.com/tweedjs/tweed",
+  "license": "WTFPL",
+  "keywords": ["ui", "vdom", "oop"],
+  "bugs": {
+    "url" : "https://github.com/tweedjs/tweed/issues"
+  },
+  "repository": "tweedjs/tweed",
+  "author": "Emil Persson <emil.n.persson@gmail.com> (https://emilpersson.se)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
