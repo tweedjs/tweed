@@ -176,8 +176,8 @@ Counter.prototype.render = function () {
 
 ### Client side
 
-```javascript
 #### ES6 + Babel
+```javascript
 // src/main.js
 
 import { Engine } from 'tweed'
