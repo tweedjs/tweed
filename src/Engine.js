@@ -34,9 +34,8 @@ export default class Engine {
 
     const isAlreadyWatched = obj[WATCHED]
     const isNotStateful = !obj[STATEFUL]
-    const isNotWatchable = typeof obj.render !== 'function'
 
-    if (isAlreadyWatched || isNotStateful || isNotWatchable) {
+    if (isAlreadyWatched || isNotStateful) {
       return
     }
 
