@@ -1,11 +1,16 @@
-import { UPDATE, STATEFUL } from './Engine'
+import { createSymbol, UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
 
 export default function MutatingDecorator (prototype, name, desc) {
   if (!prototype[STATEFUL]) {
     prototype[STATEFUL] = true
   }
 
-  const createSymbol = typeof Symbol === 'undefined' ? String : Symbol
+  if (prototype[MUTATING_FIELDS] == null) {
+    prototype[MUTATING_FIELDS] = []
+  }
+
+  prototype[MUTATING_FIELDS].push(name)
+
   const VALUE = createSymbol(`[[actual ${name}]]`)
 
   if (desc && desc.initializer) {

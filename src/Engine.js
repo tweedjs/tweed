@@ -1,8 +1,4 @@
-const createSymbol = typeof Symbol === 'undefined' ? String : Symbol
-
-export const UPDATE = createSymbol('[[UPDATE]]')
-export const STATEFUL = createSymbol('[[STATEFUL]]')
-export const WATCHED = createSymbol('[[WATCHED]]')
+import { UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
 
 export default class Engine {
   constructor (renderer) {
@@ -10,6 +6,7 @@ export default class Engine {
   }
 
   render (factory) {
+    this._watchedObjects = []
     this._watch(factory, this.render.bind(this, factory))
 
     this._renderer.render(factory.render())
@@ -20,28 +17,30 @@ export default class Engine {
       return obj
     }
 
-    if (this._isArray(obj)) {
-      for (let i = 0; i < obj.length; i++) {
-        this._watch(obj[i], rerender)
-      }
-    } else {
-      for (const prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          this._watch(obj[prop], rerender)
+    const isWatched = this._watchedObjects.indexOf(obj) !== -1
+
+    if (!isWatched) {
+      this._watchedObjects.push(obj)
+
+      if (this._isArray(obj)) {
+        for (let i = 0; i < obj.length; i++) {
+          this._watch(obj[i], rerender)
+        }
+      } else {
+        for (const prop in obj) {
+          const mutFields = obj[MUTATING_FIELDS]
+          if (obj.hasOwnProperty(prop) || mutFields && mutFields.indexOf(prop) !== -1) {
+            this._watch(obj[prop], rerender)
+          }
         }
       }
     }
 
-    const isAlreadyWatched = obj[WATCHED]
-    const isNotStateful = !obj[STATEFUL]
+    const isStateful = !!obj[STATEFUL]
 
-    if (isAlreadyWatched || isNotStateful) {
-      return
+    if (isStateful) {
+      obj[UPDATE] = rerender
     }
-
-    obj[UPDATE] = rerender
-
-    obj[WATCHED] = true
   }
 
   _isArray (arr) {
