@@ -3,6 +3,240 @@
 Tweed is a UI library similar to [React](https://facebook.github.io/react/), but in an
 object oriented style.
 
+---
+
+## Installing
+```shell
+$ npm install tweed
+```
+
+Or with [CLI](https://github.com/tweed/tweed-cli):
+
+```shell
+$ npm install --global tweed-cli
+$ tweed new my-blog
+```
+
+---
+
+## Overview
+
+Here is what a `Counter` looks like:
+
+<details>
+<summary>JavaScript (Babel)</summary>
+```javascript
+// src/Counter.js
+
+import { mutating, Node } from 'tweed'
+
+export default class Counter {
+  @mutating _times = 0
+
+  render () {
+    return (
+      <button on-click={() => this._times++}>
+        Clicked {this._times} times
+      </button>
+    )
+  }
+}
+```
+</details>
+
+<details>
+<summary>TypeScript</summary>
+```typescript
+// src/Counter.tsx
+
+import { mutating, Node } from 'tweed'
+
+export default class Counter {
+  @mutating private _times = 0
+
+  render (): Node {
+    return (
+      <button on-click={() => this._times++}>
+        Clicked {this._times} times
+      </button>
+    )
+  }
+}
+```
+</details>
+
+<details>
+<summary>JavaScript (ES5)</summary>
+```javascript
+// src/Counter.js
+
+var tweed = require('tweed')
+var mutating = tweed.mutating
+var n = tweed.Node
+
+var Counter = module.exports = function Counter () {
+  this._times = 0
+}
+
+mutating(Counter.prototype, '_times')
+
+Counter.prototype.render = function () {
+  var _this = this
+
+  return (
+    n('button', {'on-click': function () { _this._times++ }},
+      'Clicked ' + this._times + ' times'
+    )
+  )
+}
+```
+</details>
+
+### Rendering
+To render the component to the DOM, use the `Engine` class, which requires a `Renderer`.
+For browsers we use the `DOMRenderer`, available at `'tweed/render/dom'`:
+
+<details>
+<summary>JavaScript (Babel)</summary>
+```javascript
+// src/main.js
+
+import { Engine } from 'tweed'
+import DOMRenderer from 'tweed/render/dom'
+
+import Counter from './Counter'
+
+const engine = new Engine(
+  new DOMRenderer(document.querySelector('#app'))
+)
+
+engine.render(new Counter())
+```
+</details>
+
+<details>
+<summary>TypeScript</summary>
+```typescript
+// src/main.ts
+
+import { Engine } from 'tweed'
+import DOMRenderer from 'tweed/render/dom'
+
+import Counter from './Counter'
+
+const engine = new Engine(
+  new DOMRenderer(document.querySelector('#app'))
+)
+
+engine.render(new Counter())
+```
+</details>
+
+<details>
+<summary>JavaScript (ES5)</summary>
+```javascript
+// src/main.js
+
+var Engine = require('tweed').Engine
+var DOMRenderer = require('tweed/render/dom').default
+
+var Counter = require('./Counter')
+
+const engine = new Engine(
+  new DOMRenderer(document.querySelector('#app'))
+)
+
+engine.render(new Counter())
+```
+</details>
+
+### Server side rendering
+Rendering on the server works exactly the same, but instead of mounting the Virtual DOM on
+the actual DOM, we want to render the app once into a string. This can be accomplished
+with the `StringRenderer` which takes a function `(html: string) => void` as its single
+constructor argument, which can then be hooked up to any server. The `StringRenderer` is
+available at `'tweed/render/string'`.
+
+However, if you want to write a simple native Node server, there is an `HTTPRenderer` as
+well at `'tweed/render/http'`, which takes the request and response objects as constructor
+arguments:
+
+<details>
+<summary>JavaScript (Babel + Node)</summary>
+```javascript
+// src/server.js
+
+import { createServer } from 'http'
+import { Engine } from 'tweed'
+import HTTPRenderer from 'tweed/render/http'
+
+import Counter from './Counter'
+
+const server = createServer((req, res) => {
+  const engine = new Engine(
+    new HTTPRenderer(req, res)
+  )
+
+  engine.render(new Counter())
+})
+
+server.listen(1337, () => console.log('http://localhost:1337'))
+```
+</details>
+
+<details>
+<summary>TypeScript</summary>
+```typescript
+// src/server.ts
+
+import { createServer, IncomingMessage, ServerResponse } from 'http'
+import { Engine } from 'tweed'
+import HTTPRenderer from 'tweed/render/http'
+
+import Counter from './Counter'
+
+const server = createServer((req: IncomingMessage, res: ServerResponse) => {
+  const engine = new Engine(
+    new HTTPRenderer(req, res)
+  )
+
+  engine.render(new Counter())
+})
+
+server.listen(1337, () => console.log('http://localhost:1337'))
+```
+</details>
+
+<details>
+<summary>JavaScript (Node)</summary>
+```javascript
+// src/server.js
+
+const { createServer } = require('http')
+const { Engine } = require('tweed')
+const HTTPRenderer = require('tweed/render/http').default
+
+const Counter = require('./Counter')
+
+const server = createServer((req, res) => {
+  const engine = new Engine(
+    new HTTPRenderer(req, res)
+  )
+
+  engine.render(new Counter())
+})
+
+server.listen(1337, () => console.log('http://localhost:1337'))
+```
+</details>
+
+---
+
+# Why?
+So why does the world need yet another JavaScript UI library? Tweed attempts to solve a
+very specific "problem" with React, if you're used to object oriented program
+architecture.
+
 ## The problem
 React uses a top-down functional reactive architecture, with a narrow focus on pure
 functions and a one-way data flow. Component A renders Component B, which renders
@@ -49,7 +283,7 @@ Object Oriented programming teaches us to decouple code by hiding implementation
 depending on abstractions.
 
 Tweed doesn't treat components as nodes in the Virtual DOM, but simply lets you organize
-your UI in an OOP style dependency graph, which then collectively renders the v-dom.
+your UI in an OOP style dependency tree, which then collectively renders the v-dom.
 
 ```typescript
 interface Greeting {
@@ -103,309 +337,18 @@ class Counter {
 }
 ```
 
----
+As a user, you are responsible for creating all the instances of the classes _before_
+Tweed mounts them to the DOM. Those instances are then persistent, as opposed to with
+React, where class components are reinstantiated on every render (if not handled
+differently with mechanisms like `shouldComponentUpdate`).
 
-# Usage
-
-## Components
-
-#### Babel
-```javascript
-// src/Counter.js
-
-import { mutating, Node } from 'tweed'
-
-export default class Counter {
-  @mutating _times = 0
-
-  render () {
-    return (
-      <button on-click={() => this._times++}>
-        Clicked {this._times} times
-      </button>
-    )
-  }
-}
-```
-
-#### TypeScript
-```typescript
-// src/Counter.tsx
-
-import { mutating, Node } from 'tweed'
-
-export default class Counter {
-  @mutating private _times = 0
-
-  render (): Node {
-    return (
-      <button on-click={() => this._times++}>
-        Clicked {this._times} times
-      </button>
-    )
-  }
-}
-```
-
-#### ES5
-```typescript
-// src/Counter.js
-
-var tweed = require('tweed')
-var mutating = tweed.mutating
-var Node = tweed.Node
-
-function Counter () {
-  this._times = 0
-}
-
-mutating(Counter.prototype, '_times')
-
-Counter.prototype.render = function () {
-  var _this = this
-
-  return (
-    Node('button', {'on-click': function () { _this._times++ }},
-      'Clicked ' + this._times + ' times'
-    )
-  )
-}
-```
-
-## Rendering
-
-### Client side
-
-#### ES6 + Babel
-```javascript
-// src/main.js
-
-import { Engine } from 'tweed'
-import DOMRenderer from 'tweed/render/dom'
-
-import Counter from './Counter'
-
-const engine = new Engine(
-  new DOMRenderer(document.querySelector('#app'))
-)
-
-engine.render(new Counter())
-```
-
-#### TypeScript
-```typescript
-// src/main.ts
-
-import { Engine } from 'tweed'
-import DOMRenderer from 'tweed/render/dom'
-
-import Counter from './Counter'
-
-const engine = new Engine(
-  new DOMRenderer(document.querySelector('#app'))
-)
-
-engine.render(new Counter())
-```
-
-#### ES5
-```javascript
-// src/main.js
-
-var Engine = require('tweed').Engine
-var DOMRenderer = require('tweed/render/dom').default
-
-var Counter = require('./Counter')
-
-const engine = new Engine(
-  new DOMRenderer(document.querySelector('#app'))
-)
-
-engine.render(new Counter())
-```
-
-### Server side
-
-#### ES6 + Babel
-```javascript
-// src/render.js
-
-import { Engine } from 'tweed'
-import StringRenderer from 'tweed/render/string'
-
-import Counter from './Counter'
-
-export default function render (callback) {
-  const engine = new Engine(
-    new StringRenderer(callback)
-  )
-
-  engine.render(new Counter())
-}
-```
-
-#### TypeScript
-```typescript
-// src/render.ts
-
-import { Engine } from 'tweed'
-import StringRenderer from 'tweed/render/string'
-
-import Counter from './Counter'
-
-export default function render (callback: (string) => void): void {
-  const engine = new Engine(
-    new StringRenderer(callback)
-  )
-
-  engine.render(new Counter())
-}
-```
-
-#### ES5
-```javascript
-// src/render.js
-
-var Engine = require('tweed').Engine
-var StringRenderer = require('tweed/render/string').default
-
-var Counter = require('./Counter')
-
-module.exports = function render (callback) {
-  var engine = new Engine(
-    new StringRenderer(callback)
-  )
-
-  engine.render(new Counter())
-}
-```
+This is a performance benefit, because for every state change, update, and repaint, it
+boils down to a simple call to `render` on the root component. It's the equivalent of
+calling `toString` but for VDOM nodes instead of strings. And no data is being passed
+either. The state of the tree is persistent as well. Deciding to opt for a more functional
+and immutable way of managing state is entirely up to you.
 
 ---
 
-## Installing
-```shell
-> npm install tweed
-```
-
----
-
-## Building
-
-#### Babel
-```shell
-> npm install --dev babel-cli tweed-babel-config
-```
-
-```json
-// .babelrc
-{
-  "extends": "tweed-babel-config/config.json"
-}
-```
-
-```shell
-> babel src --out-dir dist
-```
-
-#### TypeScript
-```shell
-> npm install --dev typescript tweed-typescript-config
-```
-
-```json
-// tsconfig.json
-{
-  "extends": "./node_modules/tweed-typescript-config/config",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ]
-}
-```
-
-```shell
-> tsc
-```
-
-#### ES5
-ES5 does not require any build step, you can move straight on to linking.
-
----
-
-## Linking with Webpack
-```shell
-> npm install --dev webpack
-```
-
-#### Babel
-```shell
-> npm install --dev babel-loader
-```
-
-```javascript
-// webpack.config.js
-
-const { resolve } = require('path')
-
-module.exports = {
-  entry: './src/main',
-  output: {
-    path: resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
-  },
-  module: {
-    loaders: [{
-      loader: 'babel',
-      test: /\.js$/,
-      exclude: /node_modules/
-    }]
-  }
-}
-```
-
-#### TypeScript
-```shell
-> npm install --dev ts-loader
-```
-
-```typescript
-// webpack.config.js
-
-const { resolve } = require('path')
-
-module.exports = {
-  entry: './src/main',
-  output: {
-    path: resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
-  },
-  resolve: {
-    extensions: ['', '.ts', '.tsx', '.js']
-  },
-  module: {
-    loaders: [{
-      loader: 'ts',
-      test: /\.tsx?$/,
-      exclude: /node_modules/
-    }]
-  }
-}
-```
-
-#### ES5
-```javascript
-// webpack.config.js
-
-const { resolve } = require('path')
-
-module.exports = {
-  entry: './src/main',
-  output: {
-    path: resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
-  }
-}
-```
+> You can read more about the architecture of a Tweed app
+> [here](https://medium.com/@emilniklas/e1a818bb314f).
