@@ -1,6 +1,8 @@
 import { UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
 
 export default class Engine {
+  _isDirty = false
+
   constructor (renderer) {
     this._renderer = renderer
   }
@@ -39,8 +41,31 @@ export default class Engine {
     const isStateful = !!obj[STATEFUL]
 
     if (isStateful) {
-      obj[UPDATE] = rerender
+      obj[UPDATE] = () => {
+        if (this._isDirty) { return }
+
+        this._isDirty = true
+
+        this._tick(() => {
+          this._isDirty = false
+          rerender()
+        })
+      }
     }
+  }
+
+  _tick (callback) {
+    if (typeof requestIdleCallback !== 'undefined') {
+      /* global requestIdleCallback */
+      return requestIdleCallback(callback)
+    }
+
+    if (typeof requestAnimationFrame !== 'undefined') {
+      /* global requestAnimationFrame */
+      return requestAnimationFrame(callback)
+    }
+
+    setTimeout(callback)
   }
 
   _isArray (arr) {
