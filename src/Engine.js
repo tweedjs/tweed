@@ -1,4 +1,5 @@
 import { UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
+import isArray from './isArray'
 
 export default class Engine {
   _isDirty = false
@@ -24,7 +25,7 @@ export default class Engine {
     if (!isWatched) {
       this._watchedObjects.push(obj)
 
-      if (this._isArray(obj)) {
+      if (isArray(obj)) {
         for (let i = 0; i < obj.length; i++) {
           this._watch(obj[i], rerender)
         }
@@ -66,9 +67,5 @@ export default class Engine {
     }
 
     setTimeout(callback)
-  }
-
-  _isArray (arr) {
-    return Object.prototype.toString.call(arr) === '[object Array]'
   }
 }

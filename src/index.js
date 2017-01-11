@@ -1,14 +1,31 @@
 import { html } from 'snabbdom-jsx'
+import isArray from './isArray'
 
 export Engine from './Engine'
 export mutating from './MutatingDecorator'
 
 export function Node (tagName, attributes, ...children) {
-  return html(tagName, attributes || undefined, children.map(normalize))
+  return html(tagName, attributes || undefined, children.filter(invalid).map(normalize))
+}
+
+function invalid (renderable) {
+  if (renderable == null) {
+    return false
+  }
+
+  if (renderable === '') {
+    return false
+  }
+
+  return true
 }
 
 function normalize (renderable) {
-  if (renderable == null || typeof renderable !== 'object') {
+  if (isArray(renderable)) {
+    return renderable.map(normalize)
+  }
+
+  if (typeof renderable !== 'object') {
     return String(renderable)
   }
 

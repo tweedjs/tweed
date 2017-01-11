@@ -80,7 +80,7 @@ describe('Engine', () => {
 
     engine.render(root)
 
-    expect(result).toBe('<div>undefined</div>')
+    expect(result).toBe('<div></div>')
     expect(renders).toBe(1)
 
     root.child = new Child()
