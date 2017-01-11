@@ -1,3 +1,1 @@
-import HTTPRenderer from '../dist/render/HTTPRenderer'
-
-export default HTTPRenderer
+export * from '../dist/render/HTTPRenderer'

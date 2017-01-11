@@ -1,7 +1,12 @@
 import Renderer from './Renderer'
-import { Node } from '..'
+import { Node, NodeFactory } from '..'
 
-export default class StringRenderer implements Renderer {
+export class StringRenderer implements Renderer {
   constructor (listener: (html: string) => void)
   render (node: Node): void
 }
+
+export default function render (
+  root: NodeFactory,
+  listener: (html: string) => void
+): void

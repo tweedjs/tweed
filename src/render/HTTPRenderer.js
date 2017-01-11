@@ -1,10 +1,11 @@
+import Engine from '../Engine'
 import StringRenderer from './StringRenderer'
 
 const DEFAULT_LOGGER = {
   warn: console.error.bind(console)
 }
 
-export default class HTTPRenderer {
+export class HTTPRenderer {
   constructor (response, logger = DEFAULT_LOGGER) {
     let locked = false
     this._parent = new StringRenderer((html) => {
@@ -31,4 +32,10 @@ export default class HTTPRenderer {
   render (node) {
     this._parent.render(node)
   }
+}
+
+export default function render (factory, response, logger) {
+  const engine = new Engine(new HTTPRenderer(response, logger))
+
+  engine.render(factory)
 }

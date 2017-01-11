@@ -1,6 +1,9 @@
 import { UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
+import isArray from './isArray'
 
 export default class Engine {
+  _isDirty = false
+
   constructor (renderer) {
     this._renderer = renderer
   }
@@ -22,7 +25,7 @@ export default class Engine {
     if (!isWatched) {
       this._watchedObjects.push(obj)
 
-      if (this._isArray(obj)) {
+      if (isArray(obj)) {
         for (let i = 0; i < obj.length; i++) {
           this._watch(obj[i], rerender)
         }
@@ -39,11 +42,30 @@ export default class Engine {
     const isStateful = !!obj[STATEFUL]
 
     if (isStateful) {
-      obj[UPDATE] = rerender
+      obj[UPDATE] = () => {
+        if (this._isDirty) { return }
+
+        this._isDirty = true
+
+        this._tick(() => {
+          this._isDirty = false
+          rerender()
+        })
+      }
     }
   }
 
-  _isArray (arr) {
-    return Object.prototype.toString.call(arr) === '[object Array]'
+  _tick (callback) {
+    if (typeof requestIdleCallback !== 'undefined') {
+      /* global requestIdleCallback */
+      return requestIdleCallback(callback)
+    }
+
+    if (typeof requestAnimationFrame !== 'undefined') {
+      /* global requestAnimationFrame */
+      return requestAnimationFrame(callback)
+    }
+
+    setTimeout(callback)
   }
 }

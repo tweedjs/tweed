@@ -101,16 +101,10 @@ For browsers we use the `DOMRenderer`, available at `'tweed/render/dom'`:
 ```javascript
 // src/main.js
 
-import { Engine } from 'tweed'
-import DOMRenderer from 'tweed/render/dom'
-
+import render from 'tweed/render/dom'
 import Counter from './Counter'
 
-const engine = new Engine(
-  new DOMRenderer(document.querySelector('#app'))
-)
-
-engine.render(new Counter())
+render(new Counter(), document.querySelector('#app'))
 ```
 </details>
 
@@ -119,16 +113,10 @@ engine.render(new Counter())
 ```typescript
 // src/main.ts
 
-import { Engine } from 'tweed'
-import DOMRenderer from 'tweed/render/dom'
-
+import render from 'tweed/render/dom'
 import Counter from './Counter'
 
-const engine = new Engine(
-  new DOMRenderer(document.querySelector('#app'))
-)
-
-engine.render(new Counter())
+render(new Counter(), document.querySelector('#app'))
 ```
 </details>
 
@@ -137,16 +125,10 @@ engine.render(new Counter())
 ```javascript
 // src/main.js
 
-var Engine = require('tweed').Engine
-var DOMRenderer = require('tweed/render/dom').default
-
+var render = require('tweed/render/dom').default
 var Counter = require('./Counter')
 
-const engine = new Engine(
-  new DOMRenderer(document.querySelector('#app'))
-)
-
-engine.render(new Counter())
+render(new Counter(), document.querySelector('#app'))
 ```
 </details>
 
@@ -167,17 +149,12 @@ arguments:
 // src/server.js
 
 import { createServer } from 'http'
-import { Engine } from 'tweed'
-import HTTPRenderer from 'tweed/render/http'
+import render from 'tweed/render/http'
 
 import Counter from './Counter'
 
 const server = createServer((req, res) => {
-  const engine = new Engine(
-    new HTTPRenderer(req, res)
-  )
-
-  engine.render(new Counter())
+  render(new Counter(), res)
 })
 
 server.listen(1337, () => console.log('http://localhost:1337'))
@@ -190,17 +167,12 @@ server.listen(1337, () => console.log('http://localhost:1337'))
 // src/server.ts
 
 import { createServer, IncomingMessage, ServerResponse } from 'http'
-import { Engine } from 'tweed'
-import HTTPRenderer from 'tweed/render/http'
+import render from 'tweed/render/http'
 
 import Counter from './Counter'
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  const engine = new Engine(
-    new HTTPRenderer(req, res)
-  )
-
-  engine.render(new Counter())
+  render(new Counter(), res)
 })
 
 server.listen(1337, () => console.log('http://localhost:1337'))
@@ -213,17 +185,12 @@ server.listen(1337, () => console.log('http://localhost:1337'))
 // src/server.js
 
 const { createServer } = require('http')
-const { Engine } = require('tweed')
-const HTTPRenderer = require('tweed/render/http').default
+const render = require('tweed/render/http').default
 
 const Counter = require('./Counter')
 
 const server = createServer((req, res) => {
-  const engine = new Engine(
-    new HTTPRenderer(req, res)
-  )
-
-  engine.render(new Counter())
+  render(new Counter(), res)
 })
 
 server.listen(1337, () => console.log('http://localhost:1337'))

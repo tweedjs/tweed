@@ -1,3 +1,4 @@
+import Engine from '../Engine'
 import { init } from 'snabbdom'
 
 import ClassPlugin from 'snabbdom/modules/class'
@@ -12,7 +13,7 @@ const patch = init([
   EventsPlugin
 ])
 
-export default class DOMRenderer {
+export class DOMRenderer {
   constructor (element) {
     if (element == null) {
       throw new Error('Root element was null.')
@@ -24,4 +25,10 @@ export default class DOMRenderer {
   render (node) {
     this._root = patch(this._root, node)
   }
+}
+
+export default function render (factory, element) {
+  const engine = new Engine(new DOMRenderer(element))
+
+  engine.render(factory)
 }
