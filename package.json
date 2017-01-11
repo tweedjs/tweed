@@ -1,6 +1,6 @@
 {
   "name": "tweed",
-  "version": "0.2.2",
+  "version": "0.3.0-dev",
   "description": "An Object Oriented UI Library",
   "homepage": "https://github.com/tweedjs/tweed",
   "license": "WTFPL",

@@ -1,7 +1,7 @@
 /** @jsx Node */
 
 import { Engine, mutating, Node } from '../src'
-import StringRenderer from '../src/render/StringRenderer'
+import { StringRenderer } from '../src/render/StringRenderer'
 
 describe('Engine', () => {
   let result
