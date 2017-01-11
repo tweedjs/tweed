@@ -153,4 +153,35 @@ describe('Engine', () => {
     expect(result).toBe('<div>3</div>')
     expect(renders).toBe(3)
   })
+
+  test('it can watch arrays', async () => {
+    class A {
+      @mutating arr = []
+      render () {
+        return <div>{this.arr.join(',')}</div>
+      }
+    }
+
+    const a = new A()
+
+    engine.render(a)
+
+    expect(result).toBe('<div></div>')
+    expect(renders).toBe(1)
+
+    a.arr.push(1)
+    await tick()
+    expect(result).toBe('<div>1</div>')
+    expect(renders).toBe(2)
+
+    a.arr.push(2, 3)
+    await tick()
+    expect(result).toBe('<div>1,2,3</div>')
+    expect(renders).toBe(3)
+
+    a.arr[1] = 10
+    await tick()
+    expect(result).toBe('<div>1,10,3</div>')
+    expect(renders).toBe(4)
+  })
 })
