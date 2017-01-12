@@ -42,7 +42,12 @@ export default class Engine {
     const isStateful = !!obj[STATEFUL]
 
     if (isStateful) {
-      obj[UPDATE] = () => {
+      obj[UPDATE] = (sync = false) => {
+        if (sync) {
+          rerender()
+          return
+        }
+
         if (this._isDirty) { return }
 
         this._isDirty = true

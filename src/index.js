@@ -2,7 +2,11 @@ import { html } from 'snabbdom-jsx'
 import isArray from './isArray'
 
 export Engine from './Engine'
-export mutating from './MutatingDecorator'
+import MutatingDecorator from './MutatingDecorator'
+
+export const mutating = MutatingDecorator.bind(null, false)
+mutating.sync = MutatingDecorator.bind(null, true)
+mutating.async = mutating
 
 export function Node (tagName, attributes, ...children) {
   return html(tagName, attributes || undefined, children.filter(invalid).map(normalize))

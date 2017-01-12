@@ -48,4 +48,10 @@ export class Engine {
 }
 
 export type Mutating = PropertyDecorator
-export const mutating: Mutating
+
+export type MutatingMode = {
+  sync: Mutating
+  async: Mutating
+}
+
+export const mutating: Mutating & MutatingMode
