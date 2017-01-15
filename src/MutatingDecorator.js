@@ -1,7 +1,7 @@
 import { createSymbol, UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
 import isArray from './isArray'
 
-export default function MutatingDecorator (prototype, name, desc) {
+export default function MutatingDecorator (sync, prototype, name, desc) {
   if (!prototype[STATEFUL]) {
     prototype[STATEFUL] = true
   }
@@ -18,7 +18,7 @@ export default function MutatingDecorator (prototype, name, desc) {
     let initialValue = desc.initializer()
 
     if (isArray(initialValue)) {
-      wrapArray(initialValue)
+      wrapArray(sync, initialValue)
     }
 
     prototype[VALUE] = initialValue
@@ -37,13 +37,13 @@ export default function MutatingDecorator (prototype, name, desc) {
       const oldValue = this[VALUE]
 
       if (isArray(newValue)) {
-        wrapArray(newValue)
+        wrapArray(sync, newValue)
       }
 
       this[VALUE] = newValue
 
       if (UPDATE in this) {
-        this[UPDATE](newValue, oldValue)
+        this[UPDATE](sync, newValue, oldValue)
       }
     }
   }
@@ -58,15 +58,15 @@ const MUTATOR_METHODS = [
   'reverse', 'shift', 'sort', 'splice', 'unshift'
 ]
 
-function wrapArray (subject) {
+function wrapArray (sync, subject) {
   MUTATOR_METHODS.forEach((name) => {
     if (typeof subject[name] === 'function') {
       const method = subject[name]
       subject[name] = function () {
         const returnValue = method.apply(this, arguments)
         if (this[UPDATE]) {
-          ensureSetters(this)
-          this[UPDATE]()
+          ensureSetters(sync, this)
+          this[UPDATE](sync)
         }
         return returnValue
       }
@@ -74,7 +74,7 @@ function wrapArray (subject) {
   })
 }
 
-function ensureSetters (array) {
+function ensureSetters (sync, array) {
   if (!array[STATEFUL]) {
     array[STATEFUL] = true
   }
@@ -104,7 +104,7 @@ function ensureSetters (array) {
         const oldValue = this[INDEX]
         this[INDEX] = newValue
         if (this[UPDATE]) {
-          this[UPDATE](newValue, oldValue)
+          this[UPDATE](sync, newValue, oldValue)
         }
       }
     })
