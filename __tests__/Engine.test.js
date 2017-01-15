@@ -208,4 +208,21 @@ describe('Engine', () => {
     expect(result).toBe('<h1>after</h1>')
     expect(renders).toBe(2)
   })
+
+  test('class attribute', () => {
+    engine.render({ render: () =>
+      <div className='x' />
+    })
+    expect(result).toBe('<div class="x"></div>')
+
+    engine.render({ render: () =>
+      <div class='y' />
+    })
+    expect(result).toBe('<div class="y"></div>')
+
+    engine.render({ render: () =>
+      <div class={{ a: true, b: true, c: false }} />
+    })
+    expect(result).toBe('<div class="a b"></div>')
+  })
 })

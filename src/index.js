@@ -9,6 +9,13 @@ mutating.sync = MutatingDecorator.bind(null, true)
 mutating.async = mutating
 
 export function Node (tagName, attributes, ...children) {
+  if (
+    attributes != null &&
+    typeof attributes['class'] === 'string'
+  ) {
+    attributes.className = attributes['class']
+    delete attributes['class']
+  }
   return html(tagName, attributes || undefined, children.filter(invalid).map(normalize))
 }
 
