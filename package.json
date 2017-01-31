@@ -1,12 +1,16 @@
 {
   "name": "tweed",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "An Object Oriented UI Library",
   "homepage": "https://github.com/tweedjs/tweed",
   "license": "WTFPL",
-  "keywords": ["ui", "vdom", "oop"],
+  "keywords": [
+    "ui",
+    "vdom",
+    "oop"
+  ],
   "bugs": {
-    "url" : "https://github.com/tweedjs/tweed/issues"
+    "url": "https://github.com/tweedjs/tweed/issues"
   },
   "repository": "tweedjs/tweed",
   "author": "Emil Persson <emil.n.persson@gmail.com> (https://emilpersson.se)",
@@ -16,10 +20,15 @@
     "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-jest": "^18.0.0",
+    "babel-loader": "^6.2.10",
     "jest": "^18.1.0",
     "standard": "^8.6.0",
-    "tweed-babel-config": "^0.0.2",
+    "tweed-babel-config": "^0.4.0",
     "webpack": "^1.14.0"
+  },
+  "peerDependencies": {
+    "babel-polyfill": "*",
+    "babel-runtime": "*"
   },
   "dependencies": {
     "snabbdom": "^0.5.4",
