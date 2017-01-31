@@ -4,9 +4,13 @@
   "description": "An Object Oriented UI Library",
   "homepage": "https://github.com/tweedjs/tweed",
   "license": "WTFPL",
-  "keywords": ["ui", "vdom", "oop"],
+  "keywords": [
+    "ui",
+    "vdom",
+    "oop"
+  ],
   "bugs": {
-    "url" : "https://github.com/tweedjs/tweed/issues"
+    "url": "https://github.com/tweedjs/tweed/issues"
   },
   "repository": "tweedjs/tweed",
   "author": "Emil Persson <emil.n.persson@gmail.com> (https://emilpersson.se)",
