@@ -63,7 +63,7 @@ export default class Engine {
   _tick (callback) {
     if (typeof requestIdleCallback !== 'undefined') {
       /* global requestIdleCallback */
-      return requestIdleCallback(callback)
+      return requestIdleCallback(callback, { timeout: 100 })
     }
 
     if (typeof requestAnimationFrame !== 'undefined') {
