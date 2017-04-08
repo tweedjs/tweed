@@ -32,7 +32,7 @@ export default class Engine {
       } else {
         for (const prop in obj) {
           const mutFields = obj[MUTATING_FIELDS]
-          if (obj.hasOwnProperty(prop) || mutFields && mutFields.indexOf(prop) !== -1) {
+          if ((obj.hasOwnProperty && obj.hasOwnProperty(prop)) || (mutFields && mutFields.indexOf(prop) !== -1)) {
             this._watch(obj[prop], rerender)
           }
         }

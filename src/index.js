@@ -1,8 +1,8 @@
-export Engine from './Engine'
-export Node from './Node'
-
 import MutatingDecorator from './MutatingDecorator'
 import Node from './Node'
+
+export Engine from './Engine'
+export Node from './Node'
 
 export const mutating = MutatingDecorator.bind(null, false)
 mutating.sync = MutatingDecorator.bind(null, true)
