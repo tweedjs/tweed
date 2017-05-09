@@ -4,7 +4,7 @@ import Renderer from './render/Renderer'
  * Represents a Virtual DOM VirtualNode.
  */
 export interface VirtualNode {
-  readonly attributes: Attributes
+  readonly attributes: HookAttributes & Attributes
   readonly children?: (VirtualNode | string)[]
   readonly isTextNode: boolean
   readonly tagName?: string
@@ -18,6 +18,96 @@ export interface VirtualNode {
 export interface Attributes {
   [name: string]: any
 }
+
+export interface HookAttributes {
+  'hook-pre': PreHook
+  'hook-init': InitHook
+  'hook-create': CreateHook
+  'hook-insert': InsertHook
+  'hook-prepatch': PrePatchHook
+  'hook-update': UpdateHook
+  'hook-postpatch': PostPatchHook
+  'hook-destroy': Destroy
+  'hook-remove': RemoveHook
+  'hook-post': PostHook
+
+  hook: {
+    pre: PreHook,
+    init: InitHook,
+    create: CreateHook,
+    insert: InsertHook,
+    prepatch: PrePatchHook,
+    update: UpdateHook,
+    postpatch: PostPatchHook,
+    destroy: Destroy,
+    remove: RemoveHook,
+    post: PostHook
+  }
+}
+
+export class PreHook {}
+
+export class InitHook {
+  constructor (node: VirtualNode)
+
+  readonly node: VirtualNode
+}
+
+export class CreateHook {
+  constructor (old: VirtualNode, newNode: VirtualNode)
+
+  readonly old: VirtualNode
+  readonly new: VirtualNode
+  readonly element: Node
+}
+
+export class InsertHook {
+  constructor (node: VirtualNode)
+
+  readonly node: VirtualNode
+  readonly element: Node
+}
+
+export class PrePatchHook {
+  constructor (old: VirtualNode, newNode: VirtualNode)
+
+  readonly old: VirtualNode
+  readonly new: VirtualNode
+  readonly element: Node
+}
+
+export class UpdateHook {
+  constructor (old: VirtualNode, newNode: VirtualNode)
+
+  readonly old: VirtualNode
+  readonly new: VirtualNode
+  readonly element: Node
+}
+
+export class PostPatchHook {
+  constructor (old: VirtualNode, newNode: VirtualNode)
+
+  readonly old: VirtualNode
+  readonly new: VirtualNode
+  readonly element: Node
+}
+
+export class Destroy {
+  constructor (node: VirtualNode)
+
+  readonly node: VirtualNode
+  readonly element: Node
+}
+
+export class RemoveHook {
+  constructor (node: VirtualNode, callback: () => void)
+
+  readonly node: VirtualNode
+
+  done (): void
+}
+
+export class PostHook {}
 
 /**
  * If there is a render method available on an object,
