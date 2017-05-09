@@ -6,9 +6,10 @@
 * Removed the `HTTPRenderer`. Use the `StringRenderer` with whatever server instead.
 
 **Changes:**
-* `babel-runtime` and `babel-polyfill` are now included as actual dependencies, as opposed
-  to peer dependencies. But with `*` as version constraint, so they will always be
-  compatible with the version included in the application package.
+* `babel-polyfill` is no longer a peer dependency. Polyfill how you want.
+* `babel-runtime` is now included as an actual dependency, as opposed to a peer
+  dependency, but with `*` as version constraint, so it will always be compatible with
+  any version included in the application package.
 
 # 0.4.0
 

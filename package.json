@@ -27,7 +27,6 @@
     "webpack": "^1.14.0"
   },
   "dependencies": {
-    "babel-polyfill": "*",
     "babel-runtime": "*",
     "snabbdom": "^0.5.4",
     "snabbdom-jsx": "^0.3.1",
