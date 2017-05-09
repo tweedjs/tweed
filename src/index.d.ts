@@ -1,7 +1,7 @@
 import Renderer from './render/Renderer'
 
 /**
- * Represents a Virtual DOM VirtualNode.
+ * Represents a Virtual DOM Node.
  */
 export interface VirtualNode {
   readonly attributes: HookAttributes & Attributes
