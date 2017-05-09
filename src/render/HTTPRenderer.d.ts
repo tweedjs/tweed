@@ -1,5 +1,5 @@
 import Renderer from './Renderer'
-import { Node, NodeFactory } from '..'
+import { VirtualNode, VirtualNodeFactory } from '..'
 
 export interface ServerResponse {
   writeHead (statusCode: number, headers?: any): void
@@ -12,11 +12,11 @@ export interface Logger {
 
 export class HTTPRenderer implements Renderer {
   constructor (response: ServerResponse, logger?: Logger)
-  render (node: Node): void
+  render (node: VirtualNode): void
 }
 
 export default function render (
-  root: NodeFactory,
+  root: VirtualNodeFactory,
   response: ServerResponse,
   logger?: Logger
 ): void

@@ -1,12 +1,12 @@
 import Renderer from './Renderer'
-import { Node, NodeFactory } from '..'
+import { VirtualNode, VirtualNodeFactory } from '..'
 
 export class StringRenderer implements Renderer {
   constructor (listener: (html: string) => void)
-  render (node: Node): void
+  render (node: VirtualNode): void
 }
 
 export default function render (
-  root: NodeFactory,
+  root: VirtualNodeFactory,
   listener: (html: string) => void
 ): void

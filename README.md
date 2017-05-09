@@ -28,7 +28,7 @@ Here is what a `Counter` looks like:
 ```javascript
 // src/Counter.js
 
-import { mutating, Node } from 'tweed'
+import { mutating, VirtualNode } from 'tweed'
 
 export default class Counter {
   @mutating _times = 0
@@ -49,12 +49,12 @@ export default class Counter {
 ```typescript
 // src/Counter.tsx
 
-import { mutating, Node } from 'tweed'
+import { mutating, VirtualNode } from 'tweed'
 
 export default class Counter {
   @mutating private _times = 0
 
-  render (): Node {
+  render (): VirtualNode {
     return (
       <button on-click={() => this._times++}>
         Clicked {this._times} times
@@ -72,7 +72,7 @@ export default class Counter {
 
 var tweed = require('tweed')
 var mutating = tweed.mutating
-var n = tweed.Node
+var n = tweed.VirtualNode
 
 var Counter = module.exports = function Counter () {
   this._times = 0
@@ -254,7 +254,7 @@ your UI in an OOP style dependency tree, which then collectively renders the v-d
 
 ```typescript
 interface Greeting {
-  greet (name: string): Node
+  greet (name: string): VirtualNode
 }
 
 class Greeter {

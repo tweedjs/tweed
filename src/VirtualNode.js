@@ -1,7 +1,7 @@
 import { html } from 'snabbdom-jsx'
 import isArray from './isArray'
 
-export default function Node (tagName, attributes, ...children) {
+export default function VirtualNode (tagName, attributes, ...children) {
   if (
     attributes != null &&
     typeof attributes['class'] === 'string'

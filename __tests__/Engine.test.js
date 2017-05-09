@@ -1,6 +1,6 @@
-/** @jsx Node */
+/** @jsx VirtualNode */
 
-import { Engine, mutating, Node } from '../src'
+import { Engine, mutating, VirtualNode } from '../src'
 import { StringRenderer } from '../src/render/StringRenderer'
 
 describe('Engine', () => {
