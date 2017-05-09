@@ -26,11 +26,9 @@
     "tweed-babel-config": "^0.4.0",
     "webpack": "^1.14.0"
   },
-  "peerDependencies": {
-    "babel-polyfill": "*",
-    "babel-runtime": "*"
-  },
   "dependencies": {
+    "babel-polyfill": "*",
+    "babel-runtime": "*",
     "snabbdom": "^0.5.4",
     "snabbdom-jsx": "^0.3.1",
     "snabbdom-to-html": "^3.0.1"
