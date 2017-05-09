@@ -4,12 +4,12 @@ import Renderer from './render/Renderer'
  * Represents a Virtual DOM VirtualNode.
  */
 export interface VirtualNode {
-  sel?: string
-  data?: any
-  children?: Renderable[]
-  elm?: VirtualNode
-  text?: string
-  key: any
+  readonly attributes: Attributes
+  readonly children?: (VirtualNode | string)[]
+  readonly isTextNode: boolean
+  readonly tagName?: string
+  readonly text?: string
+  readonly element: Node | null
 }
 
 /**

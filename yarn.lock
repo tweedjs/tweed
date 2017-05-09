@@ -3364,10 +3364,6 @@ slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
 
-snabbdom-jsx@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/snabbdom-jsx/-/snabbdom-jsx-0.3.1.tgz#3a8c58fd88da4b76a472c0ffd2f30566a5c3c172"
-
 snabbdom-to-html@^3.0.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/snabbdom-to-html/-/snabbdom-to-html-3.1.1.tgz#733fcf33c0bb60d73622e47b15740a9e5c9e7cd4"

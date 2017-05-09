@@ -1,5 +1,22 @@
 import Engine from '../Engine'
-import toHTML from 'snabbdom-to-html'
+import init from 'snabbdom-to-html/init'
+
+import ClassPlugin from '../plugins/ClassPlugin'
+import EventsPlugin from '../plugins/EventsPlugin'
+import HooksPlugin from '../plugins/HooksPlugin'
+import StylePlugin from '../plugins/StylePlugin'
+
+import AttributesPlugin from '../plugins/AttributesPlugin'
+
+Engine.plugins = [
+  new ClassPlugin(require('snabbdom-to-html/modules/class')),
+  new EventsPlugin(), // Noop but consumes attributes
+  new HooksPlugin(),
+  new StylePlugin(require('snabbdom-to-html/modules/style')),
+  new AttributesPlugin(require('snabbdom-to-html/modules/attributes'))
+]
+
+const toHTML = init(Engine.snabbdomModules)
 
 export class StringRenderer {
   constructor (listener) {

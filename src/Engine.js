@@ -4,8 +4,15 @@ import isArray from './isArray'
 export default class Engine {
   _isDirty = false
 
+  static plugins = []
+
   constructor (renderer) {
     this._renderer = renderer
+  }
+
+  static get snabbdomModules () {
+    const getModule = (p) => p.snabbdomModule
+    return this.plugins.filter(getModule).map(getModule)
   }
 
   render (factory) {
