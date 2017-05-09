@@ -2,7 +2,7 @@
   "name": "tweed",
   "version": "0.4.1",
   "description": "An Object Oriented UI Library",
-  "homepage": "https://github.com/tweedjs/tweed",
+  "homepage": "https://tweed.js.org",
   "license": "WTFPL",
   "keywords": [
     "ui",
@@ -22,7 +22,7 @@
     "babel-jest": "^18.0.0",
     "babel-loader": "^6.2.10",
     "jest": "^18.1.0",
-    "standard": "^8.6.0",
+    "standard": "^10.0.2",
     "tweed-babel-config": "^0.4.0",
     "webpack": "^1.14.0"
   },
