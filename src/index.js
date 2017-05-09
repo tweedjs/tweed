@@ -1,6 +1,8 @@
 import MutatingDecorator from './MutatingDecorator'
 import VirtualNode from './VirtualNode'
 
+export * from './hooks'
+
 export Engine from './Engine'
 export VirtualNode from './VirtualNode'
 

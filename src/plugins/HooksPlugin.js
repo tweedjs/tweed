@@ -1,3 +1,5 @@
+import * as hooks from '../hooks'
+
 export default class HooksPlugin {
   consumeAttributes (data, attributes) {
     data.hook = {}
@@ -19,61 +21,16 @@ export default class HooksPlugin {
   }
 
   _hooks = {
-    'pre': class PreHook {
-    },
-    'init': class InitHook {
-      constructor (node) {
-        this.node = node
-      }
-    },
-    'create': class CreateHook {
-      constructor (emptyVnode, vnode) {
-        this.old = emptyVnode
-        this.new = vnode
-        this.element = vnode.element
-      }
-    },
-    'insert': class InsertHook {
-      constructor (node) {
-        this.node = node
-        this.element = node.element
-      }
-    },
-    'prepatch': class PrePatchHook {
-      constructor (oldNode, node) {
-        this.old = oldNode
-        this.new = node
-        this.element = node.element
-      }
-    },
-    'update': class UpdateHook {
-      constructor (oldNode, node) {
-        this.old = oldNode
-        this.new = node
-        this.element = node.element
-      }
-    },
-    'postpatch': class PostPatchHook {
-      constructor (oldNode, node) {
-        this.old = oldNode
-        this.new = node
-        this.element = node.element
-      }
-    },
-    'destroy': class Destroy {
-      constructor (node) {
-        this.node = node
-        this.element = node.element
-      }
-    },
-    'remove': class RemoveHook {
-      constructor (node, callback) {
-        this.node = node
-        this.done = callback
-      }
-    },
-    'post': class PostHook {
-    }
+    'pre': hooks.PreHook,
+    'init': hooks.InitHook,
+    'create': hooks.CreateHook,
+    'insert': hooks.InsertHook,
+    'prepatch': hooks.PrePatchHook,
+    'update': hooks.UpdateHook,
+    'postpatch': hooks.PostPatchHook,
+    'destroy': hooks.Destroy,
+    'remove': hooks.RemoveHook,
+    'post': hooks.PostHook
   }
 
   _wrapHook (hookName, listener) {
