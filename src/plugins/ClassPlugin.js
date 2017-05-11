@@ -7,6 +7,12 @@ export default class ClassPlugin {
     data.class = {}
 
     for (let a in attributes) {
+      if (process.env.NODE_ENV !== 'production') {
+        if (a === 'className') {
+          require('../dev/messages/classNameIsDeprecated')
+        }
+      }
+
       if (a === 'class' || a === 'className') {
         const classNames = attributes[a]
         delete attributes[a]

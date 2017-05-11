@@ -5,7 +5,7 @@ import Renderer from './render/Renderer'
  */
 export interface VirtualNode {
   readonly attributes: HookAttributes & Attributes
-  readonly children?: (VirtualNode | string)[]
+  readonly children?: VirtualNode[]
   readonly isTextNode: boolean
   readonly tagName?: string
   readonly text?: string
@@ -20,28 +20,28 @@ export interface Attributes {
 }
 
 export interface HookAttributes {
-  'hook-pre': PreHook
-  'hook-init': InitHook
-  'hook-create': CreateHook
-  'hook-insert': InsertHook
-  'hook-prepatch': PrePatchHook
-  'hook-update': UpdateHook
-  'hook-postpatch': PostPatchHook
-  'hook-destroy': Destroy
-  'hook-remove': RemoveHook
-  'hook-post': PostHook
+  'hook-pre'?: (hook: PreHook) => any
+  'hook-init'?: (hook: InitHook) => any
+  'hook-create'?: (hook: CreateHook) => any
+  'hook-insert'?: (hook: InsertHook) => any
+  'hook-prepatch'?: (hook: PrePatchHook) => any
+  'hook-update'?: (hook: UpdateHook) => any
+  'hook-postpatch'?: (hook: PostPatchHook) => any
+  'hook-destroy'?: (hook: Destroy) => any
+  'hook-remove'?: (hook: RemoveHook) => any
+  'hook-post'?: (hook: PostHook) => any
 
-  hook: {
-    pre: PreHook,
-    init: InitHook,
-    create: CreateHook,
-    insert: InsertHook,
-    prepatch: PrePatchHook,
-    update: UpdateHook,
-    postpatch: PostPatchHook,
-    destroy: Destroy,
-    remove: RemoveHook,
-    post: PostHook
+  hook?: {
+    pre?: (hook: PreHook) => any,
+    init?: (hook: InitHook) => any,
+    create?: (hook: CreateHook) => any,
+    insert?: (hook: InsertHook) => any,
+    prepatch?: (hook: PrePatchHook) => any,
+    update?: (hook: UpdateHook) => any,
+    postpatch?: (hook: PostPatchHook) => any,
+    destroy?: (hook: Destroy) => any,
+    remove?: (hook: RemoveHook) => any,
+    post?: (hook: PostHook) => any
   }
 }
 
@@ -116,15 +116,35 @@ export class PostHook {}
  * actual VirtualNode.
  */
 export interface VirtualNodeFactory {
-  render (): VirtualNode
+  readonly render: VirtualNode | (() => VirtualNode)
+}
+
+export interface RenderableFactory {
+  readonly render: Renderable | (() => Renderable)
 }
 
 /**
  * These are all the types that can be sent as a child
- * to a VirtualNode. It should be Renderable[] at the end, but
- * TypeScript doesn't allow for recursive types.
+ * to a VirtualNode.
  */
-export type Renderable = VirtualNodeFactory | VirtualNode | string | null | undefined | number | any[]
+export type Renderable = RenderableFactory | VirtualNode | string | null | undefined | number | RenderableArray | RenderableFactory
+
+/**
+ * Should really just be Renderable[], but that would
+ * create a recursive type, and TypeScript does not
+ * support that.
+ */
+export type RenderableArray = (
+  RenderableFactory | VirtualNode | string | null | undefined | number | any[] | RenderableFactory
+)[]
+
+/**
+ * Should really just be () => Renderable, but that would
+ * create a recursive type, and TypeScript does not
+ * support that.
+ */
+export type RenderableFunction = () =>
+  RenderableFactory | VirtualNode | string | null | undefined | number | RenderableArray
 
 /**
  * Creates a Virtual DOM VirtualNode. This is what JSX will
@@ -133,7 +153,7 @@ export type Renderable = VirtualNodeFactory | VirtualNode | string | null | unde
  */
 export function VirtualNode (
   tagName: string,
-  attributes?: Attributes | null,
+  attributes?: HookAttributes & Attributes | null,
   ...children: Renderable[],
 ): VirtualNode
 
@@ -145,7 +165,7 @@ declare global {
   namespace JSX {
     type Element = VirtualNode
     interface IntrinsicElements {
-      [tagName: string]: any
+      [tagName: string]: HookAttributes & Attributes
     }
   }
 
@@ -154,11 +174,7 @@ declare global {
    * that 'VirtualNode' has not been configured as the jsxFactory.
    */
   namespace React {
-    function createElement (
-      tagName: string,
-      attributes?: Attributes | null,
-      ...children: Renderable[],
-    ): VirtualNode
+    const createElement: typeof VirtualNode
   }
 }
 

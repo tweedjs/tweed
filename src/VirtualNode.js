@@ -112,6 +112,10 @@ class VirtualNode {
       return VirtualNode._renderChild(children, renderable.render())
     }
 
+    if (typeof renderable.render === 'object') {
+      return VirtualNode._renderChild(children, renderable.render)
+    }
+
     return [ ...children, renderable ]
   }
 

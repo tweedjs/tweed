@@ -19,7 +19,11 @@ export default class Engine {
     this._watchedObjects = []
     this._watch(factory, this.render.bind(this, factory))
 
-    this._renderer.render(factory.render())
+    this._renderer.render(
+      typeof factory.render === 'function'
+        ? factory.render()
+        : factory.render
+    )
   }
 
   _watch (obj, rerender) {

@@ -225,4 +225,12 @@ describe('Engine', () => {
     })
     expect(result).toBe('<div class="a b"></div>')
   })
+
+  test('it can render const components', () => {
+    engine.render({ render: <div>x</div> })
+    expect(result).toBe('<div>x</div>')
+
+    engine.render({ render: () => <div>{{ render: <div>x</div> }}</div> })
+    expect(result).toBe('<div><div>x</div></div>')
+  })
 })
