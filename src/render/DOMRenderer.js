@@ -5,6 +5,8 @@ import ClassPlugin from '../plugins/ClassPlugin'
 import EventsPlugin from '../plugins/EventsPlugin'
 import HooksPlugin from '../plugins/HooksPlugin'
 import StylePlugin from '../plugins/StylePlugin'
+import InnerHTMLPlugin from '../plugins/InnerHTMLPlugin'
+import InnerHTMLPluginDriver from '../plugins/InnerHTMLPlugin.dom'
 
 import AttributesPlugin from '../plugins/AttributesPlugin'
 
@@ -13,6 +15,7 @@ Engine.plugins = [
   new EventsPlugin(require('snabbdom/modules/eventlisteners')),
   new HooksPlugin(),
   new StylePlugin(require('snabbdom/modules/style')),
+  new InnerHTMLPlugin(InnerHTMLPluginDriver),
   new AttributesPlugin(require('snabbdom/modules/attributes'))
 ]
 

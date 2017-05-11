@@ -5,6 +5,8 @@ import ClassPlugin from '../plugins/ClassPlugin'
 import EventsPlugin from '../plugins/EventsPlugin'
 import HooksPlugin from '../plugins/HooksPlugin'
 import StylePlugin from '../plugins/StylePlugin'
+import InnerHTMLPlugin from '../plugins/InnerHTMLPlugin'
+import InnerHTMLPluginDriver from '../plugins/InnerHTMLPlugin.string'
 
 import AttributesPlugin from '../plugins/AttributesPlugin'
 
@@ -13,6 +15,7 @@ Engine.plugins = [
   new EventsPlugin(), // Noop but consumes attributes
   new HooksPlugin(),
   new StylePlugin(require('snabbdom-to-html/modules/style')),
+  new InnerHTMLPlugin(InnerHTMLPluginDriver),
   new AttributesPlugin(require('snabbdom-to-html/modules/attributes'))
 ]
 
