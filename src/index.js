@@ -1,16 +1,14 @@
+import './dev'
+
 import MutatingDecorator from './MutatingDecorator'
 import VirtualNode from './VirtualNode'
-
-import './dev'
+import assign from './assign'
 
 export Engine from './Engine'
 export VirtualNode from './VirtualNode'
 
 // export * from './hooks'
-const hooks = require('./hooks')
-for (let p in hooks) {
-  exports[p] = hooks[p]
-}
+assign(exports, require('./hooks'))
 
 export const mutating = MutatingDecorator.bind(null, false)
 mutating.sync = MutatingDecorator.bind(null, true)

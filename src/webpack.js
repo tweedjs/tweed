@@ -1,4 +1,5 @@
 import * as index from './index'
 import render from './render/DOMRenderer'
+import assign from './assign'
 
-Object.assign(exports, index, { render })
+assign(exports, index, { render })

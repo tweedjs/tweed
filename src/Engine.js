@@ -1,6 +1,8 @@
 import { UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
 import isArray from './isArray'
 
+let ENGINE_INSTANCE_ID = -1
+
 export default class Engine {
   _isDirty = false
 
@@ -8,16 +10,28 @@ export default class Engine {
 
   constructor (renderer) {
     this._renderer = renderer
+
+    if (process.env.NODE_ENV !== 'production') {
+      this.__id = ++ENGINE_INSTANCE_ID
+    }
   }
 
   static get snabbdomModules () {
-    const getModule = (p) => p.snabbdomModule
-    return this.plugins.filter(getModule).map(getModule)
+    const getModules = (p) => p.snabbdomModules
+
+    return this.plugins
+      .filter(getModules)
+      .map(getModules)
+      .reduce((a, b) => a.concat(b))
   }
 
   render (factory) {
     this._watchedObjects = []
     this._watch(factory, this.render.bind(this, factory))
+
+    if (process.env.NODE_ENV !== 'production') {
+      require('./dev/introspection/onRender').default(this, factory)
+    }
 
     this._renderer.render(
       typeof factory.render === 'function'

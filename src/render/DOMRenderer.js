@@ -11,12 +11,15 @@ import InnerHTMLPluginDriver from '../plugins/InnerHTMLPlugin.dom'
 import AttributesPlugin from '../plugins/AttributesPlugin'
 
 Engine.plugins = [
-  new ClassPlugin(require('snabbdom/modules/class')),
-  new EventsPlugin(require('snabbdom/modules/eventlisteners')),
-  new HooksPlugin(),
-  new StylePlugin(require('snabbdom/modules/style')),
-  new InnerHTMLPlugin(InnerHTMLPluginDriver),
-  new AttributesPlugin(require('snabbdom/modules/attributes'))
+  new ClassPlugin([require('snabbdom/modules/class')]),
+  new EventsPlugin([require('snabbdom/modules/eventlisteners')]),
+  new HooksPlugin([]),
+  new StylePlugin([require('snabbdom/modules/style')]),
+  new InnerHTMLPlugin([InnerHTMLPluginDriver]),
+  new AttributesPlugin([
+    require('snabbdom/modules/attributes'),
+    require('snabbdom/modules/props')
+  ])
 ]
 
 const patch = init(Engine.snabbdomModules)

@@ -1,6 +1,6 @@
 export default class StylePlugin {
-  constructor (snabbdomModule) {
-    this.snabbdomModule = snabbdomModule
+  constructor (snabbdomModules) {
+    this.snabbdomModules = snabbdomModules
   }
 
   consumeAttributes (data, attributes) {

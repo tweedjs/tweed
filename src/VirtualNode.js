@@ -1,7 +1,7 @@
 import isArray from './isArray'
 import Engine from './Engine'
 
-class VirtualTextNode {
+export class VirtualTextNode {
   constructor (text) {
     this.text = text
     this.attributes = {}
@@ -13,7 +13,7 @@ class VirtualTextNode {
   }
 }
 
-class VirtualNode {
+export class VirtualNode {
   /**
    * Creates a new Virtual DOM Node.
    *

@@ -11,12 +11,15 @@ import InnerHTMLPluginDriver from '../plugins/InnerHTMLPlugin.string'
 import AttributesPlugin from '../plugins/AttributesPlugin'
 
 Engine.plugins = [
-  new ClassPlugin(require('snabbdom-to-html/modules/class')),
-  new EventsPlugin(), // Noop but consumes attributes
-  new HooksPlugin(),
-  new StylePlugin(require('snabbdom-to-html/modules/style')),
-  new InnerHTMLPlugin(InnerHTMLPluginDriver),
-  new AttributesPlugin(require('snabbdom-to-html/modules/attributes'))
+  new ClassPlugin([require('snabbdom-to-html/modules/class')]),
+  new EventsPlugin([]), // Noop but consumes attributes
+  new HooksPlugin([]),
+  new StylePlugin([require('snabbdom-to-html/modules/style')]),
+  new InnerHTMLPlugin([InnerHTMLPluginDriver]),
+  new AttributesPlugin([
+    require('snabbdom-to-html/modules/attributes'),
+    require('snabbdom-to-html/modules/props')
+  ])
 ]
 
 const toHTML = init(Engine.snabbdomModules)
