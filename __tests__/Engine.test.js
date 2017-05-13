@@ -263,8 +263,9 @@ describe('Engine', () => {
       new RenderablePromisePlugin()
     )
 
-    const promise = new Promise((r) => setTimeout(r, 10))
-      .then(() => 123)
+    const promise = new Promise(
+      (resolve) => setTimeout(resolve, 10)
+    ).then(() => 123)
 
     engine.render({ render: () => console.log(promise) || <div>{promise}</div> })
     expect(result).toBe('<div></div>')

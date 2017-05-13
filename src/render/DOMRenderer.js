@@ -21,7 +21,7 @@ Engine.plugins = [
   new AttributesPlugin([
     require('snabbdom/modules/attributes'),
     require('snabbdom/modules/props')
-  ]),
+  ])
 ]
 
 const patch = init(Engine.snabbdomModules)

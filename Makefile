@@ -6,7 +6,7 @@ build: webpack
 
 .PHONY: webpack
 webpack: babel
-	webpack
+	webpack -p
 
 .PHONY: babel
 babel:
