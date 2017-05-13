@@ -40,7 +40,7 @@ export class VirtualNode {
     )
 
     if (process.env.NODE_ENV !== 'production') {
-      this.__stack = new Error().stack
+      this.__stack = process.env.NODE_ENV === 'test' ? '' : new Error().stack
     }
   }
 
