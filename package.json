@@ -23,7 +23,7 @@
     "babel-loader": "^6.2.10",
     "jest": "^18.1.0",
     "standard": "^10.0.2",
-    "tweed-babel-config": "^0.5.0",
+    "tweed-babel-config": "^0.5.1",
     "webpack": "^2.5.1"
   },
   "dependencies": {
@@ -42,10 +42,5 @@
   },
   "scripts": {
     "prepublish": "make"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "<rootDir>/jest.transform.js"
-    }
   }
 }
