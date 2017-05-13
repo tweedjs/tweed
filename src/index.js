@@ -2,13 +2,11 @@ import './dev'
 
 import MutatingDecorator from './MutatingDecorator'
 import VirtualNode from './VirtualNode'
-import assign from './assign'
+import * as Hooks from './hooks'
 
+export { Hooks }
 export Engine from './Engine'
 export VirtualNode from './VirtualNode'
-
-// export * from './hooks'
-assign(exports, require('./hooks'))
 
 export const mutating = MutatingDecorator.bind(null, false)
 mutating.sync = MutatingDecorator.bind(null, true)
@@ -23,8 +21,6 @@ if (g.React == null) {
   }
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  exports.Node = () => {
-    require('./dev/messages/apiHasChangedForVirtualNodes')
-  }
-}
+export const Node = process.env.NODE_ENV !== 'production'
+  ? () => require('./dev/messages/apiHasChangedForVirtualNodes')
+  : undefined
