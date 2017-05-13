@@ -137,7 +137,6 @@ export class Console {
 
   error (...args) {
     this._native.error(...this._compileArgs(args, [0, 31]))
-    throw new Error()
   }
 }
 

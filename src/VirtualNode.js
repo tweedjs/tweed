@@ -11,6 +11,17 @@ export class VirtualTextNode {
   toString () {
     return this.text
   }
+
+  toPureSnabbdomVNode () {
+    return {
+      sel: undefined,
+      data: undefined,
+      children: undefined,
+      elm: undefined,
+      text: this.text,
+      key: undefined
+    }
+  }
 }
 
 export class VirtualNode {
@@ -24,7 +35,13 @@ export class VirtualNode {
   constructor (tagName, attributes, children) {
     this.tagName = tagName
     this.attributes = attributes == null ? {} : attributes
-    this._childRenderable = children.filter(this._isRenderable)
+    this.children = this._renderChildren(
+      this._transformRenderables(children).filter(this._isRenderable)
+    )
+
+    if (process.env.NODE_ENV !== 'production') {
+      this.__stack = new Error().stack
+    }
   }
 
   /**
@@ -47,21 +64,29 @@ export class VirtualNode {
     return true
   }
 
+  _transformRenderables (renderables) {
+    return renderables.map(this._transformRenderable)
+  }
+
+  _transformRenderable (renderable) {
+    for (let i = 0; i < Engine.plugins.length; i++) {
+      const plugin = Engine.plugins[i]
+
+      if (typeof plugin.transformRenderable === 'function') {
+        const res = plugin.transformRenderable(renderable)
+
+        if (res != null) {
+          return res
+        }
+      }
+    }
+    return renderable
+  }
+
   isTextNode = false
 
   get element () {
     return this.elm || null
-  }
-
-  /**
-   * Public getter for the child nodes. Memoized.
-   *
-   * @returns (VirtualNode | string)[] | undefined
-   */
-  get children () {
-    return this._children != null
-      ? this._children
-      : (this._children = this._renderChildren())
   }
 
   toString () {
@@ -85,38 +110,92 @@ export class VirtualNode {
       '\n}'
   }
 
-  _renderChildren () {
-    return this._childRenderable.reduce(VirtualNode._renderChild, [])
+  _trackedChildren = null
+
+  _renderChildren (childRenderable) {
+    const { children, tracked } = childRenderable.reduce(VirtualNode._renderChild, {
+      children: [],
+      tracked: []
+    })
+
+    if (process.env.NODE_ENV !== 'production') {
+      this._ownTrackedChildren = tracked
+    }
+
+    this._trackedChildren = [
+      ...tracked,
+      ...children.reduce((a, c) => {
+        if (c._trackedChildren != null) {
+          return a.concat(c._trackedChildren)
+        }
+        return a
+      }, [])
+    ]
+
+    return children
   }
 
-  static _renderChild (children, renderable) {
+  static _renderChild ({ children, tracked }, renderable) {
+    if (renderable == null) {
+      return { children, tracked }
+    }
+
     if (typeof renderable === 'string') {
-      return [
-        ...children,
-        new VirtualTextNode(renderable)
-      ]
+      return {
+        children: [
+          ...children,
+          new VirtualTextNode(renderable)
+        ],
+        tracked
+      }
     }
 
     if (isArray(renderable)) {
-      return [
-        ...children,
-        ...renderable.reduce(VirtualNode._renderChild, [])
-      ]
+      const { children: reducedChildren, tracked: reducedTracked } =
+        renderable.reduce(VirtualNode._renderChild, { children: [], tracked: [] })
+
+      return {
+        children: [
+          ...children,
+          ...reducedChildren
+        ],
+        tracked: [
+          ...tracked,
+          ...reducedTracked
+        ]
+      }
     }
 
     if (typeof renderable !== 'object') {
-      return VirtualNode._renderChild(children, String(renderable))
+      return VirtualNode._renderChild({ children, tracked }, String(renderable))
     }
 
-    if (typeof renderable.render === 'function') {
-      return VirtualNode._renderChild(children, renderable.render())
+    if (renderable.render != null) {
+      if (typeof renderable.render === 'function') {
+        return VirtualNode._renderChild({
+          children,
+          tracked: [ ...tracked, renderable ]
+        }, renderable.render())
+      }
+
+      return VirtualNode._renderChild({ children, tracked }, renderable.render)
     }
 
-    if (typeof renderable.render === 'object') {
-      return VirtualNode._renderChild(children, renderable.render)
+    return {
+      children: [ ...children, renderable ],
+      tracked
     }
+  }
 
-    return [ ...children, renderable ]
+  toPureSnabbdomVNode () {
+    return {
+      sel: this.sel,
+      data: this.data,
+      children: this.children.map((c) => c.toPureSnabbdomVNode()),
+      elm: this.elm,
+      text: this.text,
+      key: this.key
+    }
   }
 
   /**

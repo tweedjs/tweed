@@ -2,6 +2,7 @@
 
 import { Engine, mutating, VirtualNode } from '../src'
 import { StringRenderer } from '../src/render/StringRenderer'
+import RenderablePromisePlugin from '../src/plugins/RenderablePromisePlugin'
 
 describe('Engine', () => {
   let renders
@@ -232,5 +233,45 @@ describe('Engine', () => {
 
     engine.render({ render: () => <div>{{ render: <div>x</div> }}</div> })
     expect(result).toBe('<div><div>x</div></div>')
+  })
+
+  test('it can render a mutating component directly', () => {
+    class MutatingComponent {
+      @mutating.sync field = 'before'
+      render = () => {
+        return (
+          <in>{this.field}</in>
+        )
+      }
+    }
+
+    const mutatingComponent = new MutatingComponent()
+
+    engine.render({ render: () => <out><x>{mutatingComponent}</x></out> })
+
+    expect(engine.isWatching(mutatingComponent)).toBe(true)
+
+    expect(result).toBe('<out><x><in>before</in></x></out>')
+
+    mutatingComponent.field = 'after'
+
+    expect(result).toBe('<out><x><in>after</in></x></out>')
+  })
+
+  test('it can render a Promise', async () => {
+    Engine.plugins.push(
+      new RenderablePromisePlugin()
+    )
+
+    const promise = new Promise((r) => setTimeout(r, 10))
+      .then(() => 123)
+
+    engine.render({ render: () => console.log(promise) || <div>{promise}</div> })
+    expect(result).toBe('<div></div>')
+
+    await promise
+    await tick()
+
+    expect(result).toBe('<div>123</div>')
   })
 })

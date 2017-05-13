@@ -1,5 +1,12 @@
 # 0.5.0
 
+**Features:**
+* Tweed now starts watching components that are not reachable via instance variables from
+  the root component, but that are used in any `render` method, given that the actual
+  object is given to the `VirtualNode` function: `<div>{someComponent}</div>`.
+* Using the above capability, any Promises given to `VirtualNode` now rerenders when the
+  promise is resolved.
+
 **Breaking:**
 * `Node` is renamed to `VirtualNode` to prevent rare collisions with the standard browser
   API constructor `Node`, supertype of `HTMLElement`.

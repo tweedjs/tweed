@@ -26,18 +26,30 @@ export default class Engine {
   }
 
   render (factory) {
-    this._watchedObjects = []
-    this._watch(factory, this.render.bind(this, factory))
+    const rerender = this.render.bind(this, factory)
 
-    if (process.env.NODE_ENV !== 'production') {
-      require('./dev/introspection/onRender').default(this, factory)
+    this._watchedObjects = []
+    this._watch(factory, rerender)
+
+    const vdom = typeof factory.render === 'function'
+      ? factory.render()
+      : factory.render
+
+    this._renderer.render(vdom)
+
+    if (vdom._trackedChildren != null) {
+      vdom._trackedChildren.forEach(
+        (c) => this._watch(c, rerender)
+      )
     }
 
-    this._renderer.render(
-      typeof factory.render === 'function'
-        ? factory.render()
-        : factory.render
-    )
+    if (process.env.NODE_ENV !== 'production') {
+      require('./dev/introspection/onRender').default(this, factory, vdom)
+    }
+  }
+
+  isWatching (obj) {
+    return this._watchedObjects.indexOf(obj) > -1
   }
 
   _watch (obj, rerender) {
@@ -62,25 +74,25 @@ export default class Engine {
           }
         }
       }
-    }
 
-    const isStateful = !!obj[STATEFUL]
+      const isStateful = !!obj[STATEFUL]
 
-    if (isStateful) {
-      obj[UPDATE] = (sync = false) => {
-        if (sync) {
-          rerender()
-          return
+      if (isStateful) {
+        obj[UPDATE] = (sync = false) => {
+          if (sync) {
+            rerender()
+            return
+          }
+
+          if (this._isDirty) { return }
+
+          this._isDirty = true
+
+          this._tick(() => {
+            this._isDirty = false
+            rerender()
+          })
         }
-
-        if (this._isDirty) { return }
-
-        this._isDirty = true
-
-        this._tick(() => {
-          this._isDirty = false
-          rerender()
-        })
       }
     }
   }
