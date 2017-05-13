@@ -38,6 +38,7 @@ export class VirtualNode {
     this.children = this._renderChildren(
       this._transformRenderables(children).filter(this._isRenderable)
     )
+    this.data = this._createSnabbdomData()
 
     if (process.env.NODE_ENV !== 'production') {
       this.__stack = process.env.NODE_ENV === 'test' ? '' : new Error().stack
@@ -196,16 +197,6 @@ export class VirtualNode {
       text: this.text,
       key: this.key
     }
-  }
-
-  /**
-   * @internal
-   * @see snabbdom
-   */
-  get data () {
-    return this._data != null
-      ? this._data
-      : (this._data = this._createSnabbdomData())
   }
 
   /**
