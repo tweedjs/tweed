@@ -10,7 +10,7 @@ export default class RenderablePromisePlugin {
   consumeAttributes () {}
 
   transformRenderable (renderable) {
-    if (typeof renderable === 'object' && typeof renderable.then === 'function') {
+    if (renderable != null && typeof renderable === 'object' && typeof renderable.then === 'function') {
       if (awaitedPromises.indexOf(renderable) > -1) {
         return awaitedRenderablePromises[awaitedPromises.indexOf(renderable)]
       }

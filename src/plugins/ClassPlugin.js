@@ -19,11 +19,15 @@ export default class ClassPlugin {
 
         if (typeof classNames === 'string') {
           classNames.split(' ').forEach((c) => {
-            data.class[c] = true
+            if (c) {
+              data.class[c] = true
+            }
           })
         } else if (typeof classNames === 'object') {
           for (let name in classNames) {
-            data.class[name] = classNames[name]
+            if (classNames[name]) {
+              data.class[name] = classNames[name]
+            }
           }
         } else {
           throw new Error(`Invalid ${a} attribute. Must be object or string.`)
@@ -37,7 +41,9 @@ export default class ClassPlugin {
         const active = attributes[a]
         delete attributes[a]
 
-        data.class[className] = active
+        if (className) {
+          data.class[className] = active
+        }
       }
     }
   }
