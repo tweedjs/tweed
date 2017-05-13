@@ -267,7 +267,7 @@ describe('Engine', () => {
       (resolve) => setTimeout(resolve, 10)
     ).then(() => 123)
 
-    engine.render({ render: () => console.log(promise) || <div>{promise}</div> })
+    engine.render({ render: () => <div>{promise}</div> })
     expect(result).toBe('<div></div>')
 
     await promise
