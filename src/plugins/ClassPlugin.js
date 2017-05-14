@@ -36,13 +36,13 @@ export default class ClassPlugin {
             const message = `Invalid <code>${a}</code> attribute. Must be object or string, but was <code>${classNames}</code>.`
             const stack = new Error().stack
             const unique = stack + message
-            this.__informedAboutInvalid = this.__informedAboutInvalid || {}
+            this.__informedAboutInvalid = this.__informedAboutInvalid || []
 
-            if (unique in this.__informedAboutInvalid) {
+            if (this.__informedAboutInvalid.indexOf(unique) > -1) {
               continue
             }
 
-            this.__informedAboutInvalid[message] = true
+            this.__informedAboutInvalid.push(unique)
 
             require('../dev/Console').default.error(message)
           }
