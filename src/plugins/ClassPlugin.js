@@ -23,14 +23,29 @@ export default class ClassPlugin {
               data.class[c] = true
             }
           })
-        } else if (typeof classNames === 'object') {
+        } else if (classNames != null && typeof classNames === 'object') {
           for (let name in classNames) {
             if (classNames[name]) {
               data.class[name] = classNames[name]
             }
           }
+        } else if (typeof classNames === 'undefined') {
+          // Skip undefined
         } else {
-          throw new Error(`Invalid ${a} attribute. Must be object or string.`)
+          if (process.env.NODE_ENV !== 'production') {
+            const message = `Invalid <code>${a}</code> attribute. Must be object or string, but was <code>${classNames}</code>.`
+            const stack = new Error().stack
+            const unique = stack + message
+            this.__informedAboutInvalid = this.__informedAboutInvalid || {}
+
+            if (unique in this.__informedAboutInvalid) {
+              continue
+            }
+
+            this.__informedAboutInvalid[message] = true
+
+            require('../dev/Console').default.error(message)
+          }
         }
 
         continue
@@ -42,7 +57,7 @@ export default class ClassPlugin {
         delete attributes[a]
 
         if (className) {
-          data.class[className] = active
+          data.class[className] = !!active
         }
       }
     }
