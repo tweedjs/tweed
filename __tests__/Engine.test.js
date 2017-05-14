@@ -1,7 +1,8 @@
-/** @jsx Node */
+/** @jsx VirtualNode */
 
-import { Engine, mutating, Node } from '../src'
+import { Engine, mutating, VirtualNode } from '../src'
 import { StringRenderer } from '../src/render/StringRenderer'
+import RenderablePromisePlugin from '../src/plugins/RenderablePromisePlugin'
 
 describe('Engine', () => {
   let renders
@@ -224,5 +225,54 @@ describe('Engine', () => {
       <div class={{ a: true, b: true, c: false }} />
     })
     expect(result).toBe('<div class="a b"></div>')
+  })
+
+  test('it can render const components', () => {
+    engine.render({ render: <div>x</div> })
+    expect(result).toBe('<div>x</div>')
+
+    engine.render({ render: () => <div>{{ render: <div>x</div> }}</div> })
+    expect(result).toBe('<div><div>x</div></div>')
+  })
+
+  test('it can render a mutating component directly', () => {
+    class MutatingComponent {
+      @mutating.sync field = 'before'
+      render = () => {
+        return (
+          <in>{this.field}</in>
+        )
+      }
+    }
+
+    const mutatingComponent = new MutatingComponent()
+
+    engine.render({ render: () => <out><x>{mutatingComponent}</x></out> })
+
+    expect(engine.isWatching(mutatingComponent)).toBe(true)
+
+    expect(result).toBe('<out><x><in>before</in></x></out>')
+
+    mutatingComponent.field = 'after'
+
+    expect(result).toBe('<out><x><in>after</in></x></out>')
+  })
+
+  test('it can render a Promise', async () => {
+    Engine.plugins.push(
+      new RenderablePromisePlugin()
+    )
+
+    const promise = new Promise(
+      (resolve) => setTimeout(resolve, 10)
+    ).then(() => 123)
+
+    engine.render({ render: () => <div>{promise}</div> })
+    expect(result).toBe('<div></div>')
+
+    await promise
+    await tick()
+
+    expect(result).toBe('<div>123</div>')
   })
 })

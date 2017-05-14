@@ -1,6 +1,4 @@
-import { optimize } from 'webpack'
-
-export default {
+module.exports = {
   entry: './src/webpack',
   output: {
     path: __dirname,
@@ -9,14 +7,11 @@ export default {
     libraryTarget: 'umd'
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loader: 'babel',
+      loader: 'babel-loader',
       exclude: /node_modules/
     }]
   },
-  devtool: 'source-map',
-  plugins: [
-    new optimize.UglifyJsPlugin()
-  ]
+  devtool: 'source-map'
 }

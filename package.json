@@ -1,6 +1,6 @@
 {
   "name": "tweed",
-  "version": "0.4.1",
+  "version": "0.5.3",
   "description": "An Object Oriented UI Library",
   "homepage": "https://github.com/tweedjs/tweed",
   "license": "WTFPL",
@@ -22,17 +22,13 @@
     "babel-jest": "^18.0.0",
     "babel-loader": "^6.2.10",
     "jest": "^18.1.0",
-    "standard": "^8.6.0",
-    "tweed-babel-config": "^0.4.0",
-    "webpack": "^1.14.0"
-  },
-  "peerDependencies": {
-    "babel-polyfill": "*",
-    "babel-runtime": "*"
+    "standard": "^10.0.2",
+    "tweed-babel-config": "^0.5.1",
+    "webpack": "^2.5.1"
   },
   "dependencies": {
+    "babel-runtime": "*",
     "snabbdom": "^0.5.4",
-    "snabbdom-jsx": "^0.3.1",
     "snabbdom-to-html": "^3.0.1"
   },
   "standard": {

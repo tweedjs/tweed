@@ -1,17 +1,30 @@
 import Engine from '../Engine'
 import { init } from 'snabbdom'
 
-import ClassPlugin from 'snabbdom/modules/class'
-import PropsPlugin from 'snabbdom/modules/props'
-import StylePlugin from 'snabbdom/modules/style'
-import EventsPlugin from 'snabbdom/modules/eventlisteners'
+import ClassPlugin from '../plugins/ClassPlugin'
+import EventsPlugin from '../plugins/EventsPlugin'
+import HooksPlugin from '../plugins/HooksPlugin'
+import StylePlugin from '../plugins/StylePlugin'
+import InnerHTMLPlugin from '../plugins/InnerHTMLPlugin'
+import InnerHTMLPluginDriver from '../plugins/InnerHTMLPlugin.dom'
+import RenderablePromisePlugin from '../plugins/RenderablePromisePlugin'
 
-const patch = init([
-  ClassPlugin,
-  PropsPlugin,
-  StylePlugin,
-  EventsPlugin
-])
+import AttributesPlugin from '../plugins/AttributesPlugin'
+
+Engine.plugins = [
+  new ClassPlugin([require('snabbdom/modules/class')]),
+  new EventsPlugin([require('snabbdom/modules/eventlisteners')]),
+  new HooksPlugin([]),
+  new StylePlugin([require('snabbdom/modules/style')]),
+  new InnerHTMLPlugin([InnerHTMLPluginDriver]),
+  new RenderablePromisePlugin(),
+  new AttributesPlugin([
+    require('snabbdom/modules/attributes'),
+    require('snabbdom/modules/props')
+  ])
+]
+
+const patch = init(Engine.snabbdomModules)
 
 export class DOMRenderer {
   constructor (element) {

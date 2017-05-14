@@ -1,18 +1,55 @@
 import { UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
 import isArray from './isArray'
 
+let ENGINE_INSTANCE_ID = -1
+
 export default class Engine {
   _isDirty = false
 
+  static plugins = []
+
   constructor (renderer) {
     this._renderer = renderer
+
+    if (process.env.NODE_ENV !== 'production') {
+      this.__id = ++ENGINE_INSTANCE_ID
+    }
+  }
+
+  static get snabbdomModules () {
+    const getModules = (p) => p.snabbdomModules
+
+    return this.plugins
+      .filter(getModules)
+      .map(getModules)
+      .reduce((a, b) => a.concat(b))
   }
 
   render (factory) {
-    this._watchedObjects = []
-    this._watch(factory, this.render.bind(this, factory))
+    const rerender = this.render.bind(this, factory)
 
-    this._renderer.render(factory.render())
+    this._watchedObjects = []
+    this._watch(factory, rerender)
+
+    const vdom = typeof factory.render === 'function'
+      ? factory.render()
+      : factory.render
+
+    this._renderer.render(vdom)
+
+    if (vdom._trackedChildren != null) {
+      vdom._trackedChildren.forEach(
+        (c) => this._watch(c, rerender)
+      )
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      require('./dev/introspection/onRender').default(this, factory, vdom)
+    }
+  }
+
+  isWatching (obj) {
+    return this._watchedObjects.indexOf(obj) > -1
   }
 
   _watch (obj, rerender) {
@@ -37,25 +74,25 @@ export default class Engine {
           }
         }
       }
-    }
 
-    const isStateful = !!obj[STATEFUL]
+      const isStateful = !!obj[STATEFUL]
 
-    if (isStateful) {
-      obj[UPDATE] = (sync = false) => {
-        if (sync) {
-          rerender()
-          return
+      if (isStateful) {
+        obj[UPDATE] = (sync = false) => {
+          if (sync) {
+            rerender()
+            return
+          }
+
+          if (this._isDirty) { return }
+
+          this._isDirty = true
+
+          this._tick(() => {
+            this._isDirty = false
+            rerender()
+          })
         }
-
-        if (this._isDirty) { return }
-
-        this._isDirty = true
-
-        this._tick(() => {
-          this._isDirty = false
-          rerender()
-        })
       }
     }
   }

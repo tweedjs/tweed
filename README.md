@@ -23,12 +23,10 @@ $ tweed new my-blog
 
 Here is what a `Counter` looks like:
 
-<details>
-<summary>JavaScript (Babel)</summary>
 ```javascript
 // src/Counter.js
 
-import { mutating, Node } from 'tweed'
+import { mutating, VirtualNode } from 'tweed'
 
 export default class Counter {
   @mutating _times = 0
@@ -42,62 +40,9 @@ export default class Counter {
   }
 }
 ```
-</details>
-
-<details>
-<summary>TypeScript</summary>
-```typescript
-// src/Counter.tsx
-
-import { mutating, Node } from 'tweed'
-
-export default class Counter {
-  @mutating private _times = 0
-
-  render (): Node {
-    return (
-      <button on-click={() => this._times++}>
-        Clicked {this._times} times
-      </button>
-    )
-  }
-}
-```
-</details>
-
-<details>
-<summary>JavaScript (ES5)</summary>
-```javascript
-// src/Counter.js
-
-var tweed = require('tweed')
-var mutating = tweed.mutating
-var n = tweed.Node
-
-var Counter = module.exports = function Counter () {
-  this._times = 0
-}
-
-mutating(Counter.prototype, '_times')
-
-Counter.prototype.render = function () {
-  var _this = this
-
-  return (
-    n('button', {'on-click': function () { _this._times++ }},
-      'Clicked ' + this._times + ' times'
-    )
-  )
-}
-```
-</details>
 
 ### Rendering
-To render the component to the DOM, use the `Engine` class, which requires a `Renderer`.
-For browsers we use the `DOMRenderer`, available at `'tweed/render/dom'`:
 
-<details>
-<summary>JavaScript (Babel)</summary>
 ```javascript
 // src/main.js
 
@@ -106,31 +51,6 @@ import Counter from './Counter'
 
 render(new Counter(), document.querySelector('#app'))
 ```
-</details>
-
-<details>
-<summary>TypeScript</summary>
-```typescript
-// src/main.ts
-
-import render from 'tweed/render/dom'
-import Counter from './Counter'
-
-render(new Counter(), document.querySelector('#app'))
-```
-</details>
-
-<details>
-<summary>JavaScript (ES5)</summary>
-```javascript
-// src/main.js
-
-var render = require('tweed/render/dom').default
-var Counter = require('./Counter')
-
-render(new Counter(), document.querySelector('#app'))
-```
-</details>
 
 ### Server side rendering
 Rendering on the server works exactly the same, but instead of mounting the Virtual DOM on
@@ -139,63 +59,17 @@ with the `StringRenderer` which takes a function `(html: string) => void` as its
 constructor argument, which can then be hooked up to any server. The `StringRenderer` is
 available at `'tweed/render/string'`.
 
-However, if you want to write a simple native Node server, there is an `HTTPRenderer` as
-well at `'tweed/render/http'`, which takes the request and response objects as constructor
-arguments:
-
-<details>
-<summary>JavaScript (Babel + Node)</summary>
 ```javascript
-// src/server.js
+// src/main.js
 
-import { createServer } from 'http'
-import render from 'tweed/render/http'
-
+import render from 'tweed/render/string'
 import Counter from './Counter'
 
-const server = createServer((req, res) => {
-  render(new Counter(), res)
+render(new Counter(), (html) => {
+  res.writeHead(200, { 'Content-Type': 'text/html' })
+  res.end(html)
 })
-
-server.listen(1337, () => console.log('http://localhost:1337'))
 ```
-</details>
-
-<details>
-<summary>TypeScript</summary>
-```typescript
-// src/server.ts
-
-import { createServer, IncomingMessage, ServerResponse } from 'http'
-import render from 'tweed/render/http'
-
-import Counter from './Counter'
-
-const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  render(new Counter(), res)
-})
-
-server.listen(1337, () => console.log('http://localhost:1337'))
-```
-</details>
-
-<details>
-<summary>JavaScript (Node)</summary>
-```javascript
-// src/server.js
-
-const { createServer } = require('http')
-const render = require('tweed/render/http').default
-
-const Counter = require('./Counter')
-
-const server = createServer((req, res) => {
-  render(new Counter(), res)
-})
-
-server.listen(1337, () => console.log('http://localhost:1337'))
-```
-</details>
 
 ---
 
@@ -254,7 +128,7 @@ your UI in an OOP style dependency tree, which then collectively renders the v-d
 
 ```typescript
 interface Greeting {
-  greet (name: string): Node
+  greet (name: string): VirtualNode
 }
 
 class Greeter {
