@@ -1,3 +1,11 @@
+# 0.5.1
+
+**Changes:**
+* Mutations have been simplifies to not be tracked by `Engine`, but instead publish all
+  mutations globally. Upside is less code and better performance in apps where there are
+  only one renderer (which should be most apps). Downside is that all engines will update
+  for every mutation globally.
+
 # 0.5.0
 
 **Features:**

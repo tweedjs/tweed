@@ -1,5 +1,6 @@
-import { createSymbol, UPDATE, STATEFUL, MUTATING_FIELDS } from './Symbols'
+import { createSymbol, STATEFUL, MUTATING_FIELDS } from './Symbols'
 import isArray from './isArray'
+import EngineCollection from './EngineCollection'
 
 export default function MutatingDecorator (sync, prototype, name, desc) {
   if (!prototype[STATEFUL]) {
@@ -28,23 +29,19 @@ export default function MutatingDecorator (sync, prototype, name, desc) {
     enumerable: true,
     configurable: false,
     get () {
-      if (this[UPDATE] && isArray(this[VALUE]) && this[VALUE][UPDATE] == null) {
-        this[VALUE][UPDATE] = this[UPDATE]
-      }
       return this[VALUE]
     },
     set (newValue) {
       const oldValue = this[VALUE]
 
       if (isArray(newValue)) {
-        wrapArray(sync, newValue)
+        wrapArray(sync, newValue, name)
       }
 
       this[VALUE] = newValue
 
-      if (UPDATE in this) {
-        this[UPDATE](sync, newValue, oldValue)
-      }
+      EngineCollection.instance
+        .notify(this, name, sync, newValue, oldValue)
     }
   }
 
@@ -58,16 +55,18 @@ const MUTATOR_METHODS = [
   'reverse', 'shift', 'sort', 'splice', 'unshift'
 ]
 
-function wrapArray (sync, subject) {
+function wrapArray (sync, subject, arrayPropName) {
   MUTATOR_METHODS.forEach((name) => {
     if (typeof subject[name] === 'function') {
       const method = subject[name]
       subject[name] = function () {
+        const oldValue = process.env.NODE_ENV === 'production'
+          ? this : this.slice()
         const returnValue = method.apply(this, arguments)
-        if (this[UPDATE]) {
-          ensureSetters(sync, this)
-          this[UPDATE](sync)
-        }
+        const newValue = this
+        ensureSetters(sync, this)
+        EngineCollection.instance
+          .notify(subject, arrayPropName, sync, newValue, oldValue)
         return returnValue
       }
     }
@@ -103,9 +102,8 @@ function ensureSetters (sync, array) {
       set (newValue) {
         const oldValue = this[INDEX]
         this[INDEX] = newValue
-        if (this[UPDATE]) {
-          this[UPDATE](sync, newValue, oldValue)
-        }
+        EngineCollection.instance
+          .notify(this, INDEX, sync, newValue, oldValue)
       }
     })
   }

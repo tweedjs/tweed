@@ -249,8 +249,6 @@ describe('Engine', () => {
 
     engine.render({ render: () => <out><x>{mutatingComponent}</x></out> })
 
-    expect(engine.isWatching(mutatingComponent)).toBe(true)
-
     expect(result).toBe('<out><x><in>before</in></x></out>')
 
     mutatingComponent.field = 'after'
