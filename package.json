@@ -17,19 +17,20 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-eslint": "^7.1.1",
-    "babel-jest": "^18.0.0",
-    "babel-loader": "^6.2.10",
-    "jest": "^18.1.0",
-    "standard": "^10.0.2",
-    "tweed-babel-config": "^0.5.1",
-    "webpack": "^2.5.1"
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.5",
+    "babel-jest": "^23.2.0",
+    "babel-loader": "^7.1.4",
+    "jest": "^23.2.0",
+    "standard": "^11.0.1",
+    "tweed-babel-config": "^0.5.2",
+    "webpack-cli": "^3.0.8",
+    "webpack": "^4.14.0"
   },
   "dependencies": {
     "babel-runtime": "*",
-    "snabbdom": "^0.5.4",
-    "snabbdom-to-html": "^3.0.1"
+    "snabbdom": "^0.7.1",
+    "snabbdom-to-html": "^5.1.1"
   },
   "standard": {
     "parser": "babel-eslint",
@@ -40,7 +41,13 @@
       "expect"
     ]
   },
+  "jest": {
+    "setupFiles": [
+      "./support/shim.js"
+    ]
+  },
   "scripts": {
-    "prepublish": "make"
+    "prepublish": "make",
+    "test": "jest"
   }
 }
