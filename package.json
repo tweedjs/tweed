@@ -19,9 +19,9 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^7.1.1",
-    "babel-jest": "^18.0.0",
+    "babel-jest": "^23.2.0",
     "babel-loader": "^7.1.4",
-    "jest": "^18.1.0",
+    "jest": "^23.2.0",
     "standard": "^11.0.1",
     "tweed-babel-config": "^0.5.2",
     "webpack-cli": "^3.0.8",
@@ -41,7 +41,13 @@
       "expect"
     ]
   },
+  "jest": {
+    "setupFiles": [
+      "./support/shim.js"
+    ]
+  },
   "scripts": {
-    "prepublish": "make"
+    "prepublish": "make",
+    "test": "jest"
   }
 }
