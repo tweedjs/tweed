@@ -17,14 +17,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^7.1.1",
     "babel-jest": "^18.0.0",
-    "babel-loader": "^6.2.10",
+    "babel-loader": "^7.1.4",
     "jest": "^18.1.0",
-    "standard": "^10.0.2",
-    "tweed-babel-config": "^0.5.1",
-    "webpack": "^2.5.1"
+    "standard": "^11.0.1",
+    "tweed-babel-config": "^0.5.2",
+    "webpack-cli": "^3.0.8",
+    "webpack": "^4.14.0"
   },
   "dependencies": {
     "babel-runtime": "*",
